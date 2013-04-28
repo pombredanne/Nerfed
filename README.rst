@@ -4,7 +4,7 @@ Nerfed
 :python: 2.7
 :depedencies: requirements.txt
 
-This is a work progress
+This is a work in progress
 
 Kesako ?
 ========
