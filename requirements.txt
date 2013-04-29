@@ -1,4 +1,4 @@
 webob
 jinja2
-watchmedo
+watchdog
 gunicorn
