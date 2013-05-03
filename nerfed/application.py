@@ -24,8 +24,15 @@ class Application(ErrorResponses):
 
     def register(self, domain, sub_class, path, instance_name=None):
         log.debug('registred %s' % sub_class)
-        sub = sub_class(self, re.compile(path), instance_name)
+        sub = sub_class(self, self, path)
+        sub.domain = domain
         self.subs.append((re.compile(domain), sub))
+        return sub
+
+    def full_path(self, current):
+        for domain, sub in self.subs:
+            if sub == current:
+                return sub.domain
 
     def _match_path(self, match, path, subs):
         match = None
