@@ -86,10 +86,10 @@ class Application(ErrorResponses):
         response = self.not_found(request)
         return response(environ, start_response)
 
-    def render(self, request, path, **kwargs):
+    def render(self, request, path, **context):
         response = Response(status=200)
         template = self.loader.load(Environment(), path)
         kwargs['settings'] = self.settings
         kwargs['request'] = request
-        response.text = template.render(**kwargs)
+        response.text = template.render(**context)
         return response
