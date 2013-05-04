@@ -22,7 +22,7 @@ class Application(ErrorResponses):
 
         self.loader = FileSystemLoader(settings.templates_path)
 
-    def register(self, domain, sub_class, path, instance_name=None):
+    def register(self, domain, sub_class, path):
         log.debug('registred %s' % sub_class)
         sub = sub_class(self, self, path)
         sub.domain = domain
