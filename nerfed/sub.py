@@ -35,10 +35,10 @@ class Sub(object):
     def __call__(self, request):
         method = request.method
         if method not in ('GET', 'HEAD', 'POST', 'PUT'):
-            return self.forbidden()
+            return self.app.forbidden()
         if hasattr(self, method.lower()):
             return self.get(request)
-        return self.forbidden()
+        return self.app.forbidden()
 
     def reverse(self, **kwargs):
         return self.format % kwargs
