@@ -22,9 +22,9 @@ class Application(ErrorResponses):
 
         self.loader = FileSystemLoader(settings.templates_path)
 
-    def register(self, domain, sub_class, path):
+    def register(self, domain, sub_class, path, *args, **kwargs):
         log.debug('registred %s' % sub_class)
-        sub = sub_class(self, self, path)
+        sub = sub_class(self, self, path, *args, **kwargs)
         sub.domain = domain
         self.subs.append((re.compile(domain), sub))
         return sub
