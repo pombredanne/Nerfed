@@ -1,13 +1,11 @@
 import re
 
-from shared import ErrorResponses
-
 
 REGROUP = re.compile(r'\(\?P<\w+>[^\)]+\)')
 REGROUPNAME = re.compile('<(\w+)>')
 
 
-class Sub(ErrorResponses):
+class Sub(object):
 
     def __init__(self, app, parent, path):
         self.app = app
