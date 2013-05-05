@@ -27,9 +27,6 @@ Nerfed is Object Oriented web framework. Here is a «Héllo world» application:
 
    class Hello(Sub):
 
-       def __init__(self, app, path, instance_name=None):
-           super(Hello, self).__init__(app, path)
-
        def get(self, request):
            return self.app.render(request, 'index.html')
 
@@ -38,7 +35,7 @@ Nerfed is Object Oriented web framework. Here is a «Héllo world» application:
 
        def __init__(self):
            super(Demo, self).__init__(Settings())
-           self.register('localhost', Hello, '^/$')
+           self.hello = self.register('localhost', Hello, '^/$')
 
    demo = Demo()
 
@@ -87,6 +84,8 @@ The ``Application`` object of a tree, is always accessible in its children as th
 
 .. note:: This relatively controlversial, but I think that thread locals are a bad thing. It's complex concept and also it's not needed to understand it to make web framework, so why not just avoid them if one can? Moreover, thread locals need to be imported in the case of the ``request`` or ``db``, it makes for two pervasive imports. Also, thread locals are inherited from PHP thinking pattern. Instead the request object is parameter and databases objects are ``Application`` object properties.
 
+``register(domain, sub_class, path, *args, **kwargs)`` returns a ``Sub`` instance that you can put in a dictionary or a store as a property of the ``Application`` object like it's done in the demo application above.
+
 ``Application.render(request, path, **context)``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -107,7 +106,43 @@ If ``self`` is a ``Sub`` the following call ``self.app.render(request, 'profile/
 ``Sub``
 -------
 
-FIXME
+Like it's said above, an application is a tree, a tree of ``Sub`` object. As such ``Sub`` is node in the tree possibly a leaf node, in which case it doesn't have children. A ``Sub``'s child is another ``Sub```, it's a recursive datastructure, and that's what is called a tree.
+
+
+``Sub(app, parent, path, *args, **kwargs)``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A Sub can be created using ``Application.register(domain, sub_class, path, *args, **kwargs)`` or using ```Sub.register(self, sub_class, path)``. You never use the constructor of a sub in principle. Still it's interesting to know what makes a ``Sub`` to use it with perfection. The constructor parameters are defined as follows:
+
+- ``app``, is the application the Sub is taking part in
+- ``parent``, is the parent node, most of the time it's another ```Sub``, but for ```Sub`` that forms the first level of ``Sub`` in the application in tree, it's the application object (again).
+- ``path``, path is used to compute to which answer this ``Sub`` answers to, to know the path to this ``Sub`` you can use the internal property ``self._fullpath``.
+- ``*args`` & ``**kwargs`` those are supplemental parameters that can be used to configure the object.
+
+Like it's said above, you never use directly the constructore, but I hope it made things more clear.
+
+``register(sub_class, path)``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Used to add a ``Sub`` to another ``Sub``, this is how you build the tree of ``Sub`` in principle you call this method in the constructor. Arguments are explained in the following:
+ 
+- ```sub_class`` is a ``Sub`` class, how unexpected ?
+- ``path`` is the *current* ``path`` a request should be resolved to when it has already consumed the elements of ``request.path`` from the ``Sub`` that are before in the branch.
+
+Like it's said in the above ``path`` is what will be checked against what remains of ``request.path`` to match the request to this ``Sub`` as a *container* of ``Sub`` and *methods*. Indeed ``Sub`` is also a request handler, if you define one of the accepted methods: get, head, post, put; it will answer the request, only if it's a *full match* i.e. it consumed the remaining of ``request.path``.
+
+.. note:: add a diagram.
+
+``reverse(**kwargs)``
+~~~~~~~~~~~~~~~~~~~~~
+
+This method allows to reverse the current ``Sub`` to a ``path`` or full ``depending`` how the application is built. This is also the method used in templates to retrieve the url for ``Sub`` given some parameters ``kwargs```.
+
+
+Conclusion
+##########
+
+The documentation needs more work but I hope you got the basic principles.
 
 
 Indices and tables
