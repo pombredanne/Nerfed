@@ -20,7 +20,7 @@ class Application(ErrorResponses):
         self.subs = list()
         self.app = self
 
-        self.loader = FileSystemLoader(settings.templates_path)
+        self.loader = FileSystemLoader(settings.TEMPLATES_PATH)
 
     def register(self, domain, sub_class, path, *args, **kwargs):
         log.debug('registred %s' % sub_class)
