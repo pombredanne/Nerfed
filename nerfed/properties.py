@@ -46,7 +46,7 @@ class Property(object):
         del object.data[self]
 
     def register(self, klass, name):
-        klass.fields[name] = self
+        klass.properties[name] = self
         self.name = name
 
 
@@ -54,11 +54,11 @@ class String(Property):
     pass
 
 
-def convert_to_int(imperator, field, value):
+def convert_to_int(imperator, property, value):
     try:
-        setattr(imperator, field.name, int(value))
+        setattr(imperator, property.name, int(value))
     except:
-        imperator.log_message(field, 'This is not an integer')
+        imperator.log_message(property, 'This is not an integer')
 
 
 class Integer(Property):

@@ -159,7 +159,7 @@ class PropertyBasedClass(type):
     """Metaclass for the so called declarative syntax"""
 
     def __init__(klass, classname, bases, class_dict):
-        klass.fields = dict()
+        klass.properties = dict()
 
         # register properties defined in this class
         for name, property in class_dict.iteritems():
@@ -181,28 +181,28 @@ class Imperator(object):
     def __init__(self, data, app=None):
         self.data = dict()
         for name, value in data.iteritems():
-            field = self.fields[name]
-            self.data[field] = value
+            property = self.properties[name]
+            self.data[property] = value
         self.app = app
 
     def __call__(self):
         """Executes actions on each properties and object wide return False
         if one of the action do so"""
         all_ok = True
-        for field in self.fields.values():
-            value = self.data.get(field, None)
-            for action in field.actions:
-                ok = action(self, field, value)
+        for property in self.properties.values():
+            value = self.data.get(property, None)
+            for action in property.actions:
+                ok = action(self, property, value)
                 all_ok = False if not ok else all_ok
             for action in self.actions:
                 ok = action(self, all_ok)
                 all_ok = False if not ok else all_ok
         return all_ok
 
-    def log_message(self, field, message):
-        """Handy function to log messages for a specific field"""
+    def log_message(self, property, message):
+        """Log message for a specific property"""
         if not hasattr(self, 'messages'):
             self.messages = dict()
-        if field.name not in self.messages:
-            self.messages[field.name] = list()
+        if property.name not in self.messages:
+            self.messages[property.name] = list()
         self.messages.append(message)
