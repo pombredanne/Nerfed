@@ -29,7 +29,7 @@ class Property(object):
     """
 
     def __init__(self, *actions, **options):
-        self.actions = actions
+        self.actions = list(actions)
         self.options = options
         self.name = None  # set by the metaclass
 
