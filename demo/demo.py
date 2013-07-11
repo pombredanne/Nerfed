@@ -35,7 +35,6 @@ class Demo(Application):
 
     def __init__(self):
         super(Demo, self).__init__(Settings())
-        print self.settings.SQLALCHEMY
         self.db = SQLAlchemyDB(self.settings.SQLALCHEMY)
         self.register(Hello, '^/$')
         self.db.metadata.create_all()
