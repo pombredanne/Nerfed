@@ -9,7 +9,7 @@ from nerfed.properties import Integer
 
 
 class Message(Imperator):
-    id = Integer(primary_key=True)
+    id = Integer(primary_key=True, autoincrement=True, nullable=True)
     message = String()
 
 
@@ -23,8 +23,8 @@ class Settings(object):
 
 class Hello(Sub):
 
-    def __init__(self, app, path, instance_name=None):
-        super(Hello, self).__init__(app, self, path)
+    def __init__(self, app, parent, path, instance_name=None):
+        super(Hello, self).__init__(app, parent, path)
         self.app.db.register(Message)
 
     def get(self, request):
@@ -37,6 +37,5 @@ class Demo(Application):
         super(Demo, self).__init__(Settings())
         self.db = SQLAlchemyDB(self.settings.SQLALCHEMY)
         self.register(Hello, '^/$')
-        self.db.metadata.create_all()
 
 demo = Demo()
