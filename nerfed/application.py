@@ -22,17 +22,14 @@ class Application(ErrorResponses):
 
         self.loader = FileSystemLoader(settings.TEMPLATES_PATH)
 
-    def register(self, domain, sub_class, path, *args, **kwargs):
+    def register(self, sub_class, path, *args, **kwargs):
         log.debug('registred %s' % sub_class)
         sub = sub_class(self, self, path, *args, **kwargs)
-        sub.domain = domain
-        self.subs.append((re.compile(domain), sub))
+        self.subs.append(sub)
         return sub
 
     def full_path(self, current):
-        for domain, sub in self.subs:
-            if sub == current:
-                return sub.domain
+        return '/'
 
     def _match_path(self, match, path, subs):
         match = None
@@ -62,23 +59,17 @@ class Application(ErrorResponses):
 
     def __call__(self, environ, start_response):
         request = Request(environ)
-        for domain, sub in self.subs:
-            log.debug('try to match %s @ %s' % (sub, domain))
-            # first match the domain if any
-            domain_match = domain.match(request.server_name)
-            if not domain_match:
-                continue
-            # try to match the path
-            path = request.path
-            path_match, sub = self._match_path(dict(), path, [sub])
+        for sub in self.subs:
+            log.debug('try to match %s' % sub)
+            # first match the domain if any try to match the path
+            path_match, sub = self._match_path(dict(), request.path, [sub])
             if not path_match:
                 continue
-            # found the good sub, just call __call__ :)
+            # found the good sub
             request.path_match = path_match
-            request.domain_match = domain_match
             try:
                 response = sub(request)
-            except Exception, e:
+            except Exception:  # XXX: improve this
                 print_exc()
                 response = self.internal_server_error(request)
                 return response(environ, start_response)
