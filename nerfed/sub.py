@@ -10,6 +10,7 @@ class Sub(object):
     def __init__(self, app, parent, path):
         self.app = app
         self.subs = list()
+        self.parent = parent
         self.path = re.compile(path)
 
         self._full_path = self.parent.full_path(self) + path
