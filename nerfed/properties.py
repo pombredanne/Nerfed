@@ -65,7 +65,10 @@ class Integer(Property):
 
     def __init__(self, *actions, **options):
         super(Integer, self).__init__(*actions, **options)
-        self.actions.insert(0, convert_to_int)
+        if options.get('nullable', False):
+            self.actions.insert(0, lambda imperator, property, value: True if not value else convert_to_int(x))
+        else:
+            self.actions.insert(0, convert_to_int)
 
 
 class Float(Property):
