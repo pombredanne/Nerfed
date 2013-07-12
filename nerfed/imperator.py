@@ -194,7 +194,7 @@ class Imperator(object):
             for action in property.actions:
                 ok = action(self, property, value)
                 all_ok = False if not ok else all_ok
-            for action in self.actions:
+            for action in getattr(self, 'actions', list()):
                 ok = action(self, all_ok)
                 all_ok = False if not ok else all_ok
         return all_ok
@@ -205,4 +205,7 @@ class Imperator(object):
             self.messages = dict()
         if property.name not in self.messages:
             self.messages[property.name] = list()
-        self.messages.append(message)
+        self.messages[property.name].append(message)
+
+    def dict(self):
+        return dict(map(lambda item: (item[0].name, item[1]), self.data.iteritems()))
