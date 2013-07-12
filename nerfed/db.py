@@ -11,9 +11,12 @@ from properties import Integer as NerfedInteger
 
 class SQLAlchemyDB(object):
 
+    NOT_COLUMN_PROPERTY = ['blank']
+
     def __init__(self, configuration):
         self.engine = engine_from_config(dict(), **configuration)
         self.metadata = MetaData()
+        self.metadata.bind = self.engine
 
     def _column_type(self, property):
         if isinstance(property, NerfedString):
@@ -21,18 +24,27 @@ class SQLAlchemyDB(object):
         if isinstance(property, NerfedInteger):
             return SQLAInteger
 
-    def _columns(self, imperator):
-        for name, property in imperator.properties.iteritems():
-            yield Column(name, self._column_type(property), **property.options)
+    def _columns(self, imperator_class):
+        for name, property in imperator_class.properties.iteritems():
+            options = dict(filter(lambda x: x[0] not in SQLAlchemyDB.NOT_COLUMN_PROPERTY, property.options.iteritems()))
+            yield Column(name, self._column_type(property), **options)
 
-    def register(self, imperator):
+    def register(self, imperator_class):
         table = Table(
-            imperator.name,
+            imperator_class.__name__,
             self.metadata,
-            *self._columns(imperator)
+            *list(self._columns(imperator_class))
         )
-        imperator._table = table
+        imperator_class._table = table
         return table
 
     def create_all(self):
         self.metadata.create_all(self.engine)
+
+    def transaction(self):
+        return self.engine.begin()
+
+    def save(self, connection, imperator):
+        if not imperator():
+            raise Exception('Impossible to validate imperator object %s', imperator)
+        connection.execute(imperator._table.insert(), **imperator.dict())
