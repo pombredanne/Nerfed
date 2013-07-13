@@ -15,7 +15,7 @@ log = getLogger(__file__)
 
 class Application(ErrorResponses):
 
-    middlewares = [CSRF]
+    middlewares = [CSRF()]
 
     def __init__(self, settings=None):
         self.settings = settings
