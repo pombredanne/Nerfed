@@ -10,4 +10,4 @@ class MongoDB(object):
         try:
             return super(MongoDB, self).__getattribute__(attr)
         except AttributeError:
-            return getattr(self.client, attr)y
+            return getattr(self.client, attr)
