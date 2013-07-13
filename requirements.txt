@@ -2,3 +2,8 @@ webob
 jinja2
 watchdog
 gunicorn
+gevent
+pymongo
+sqlalchemy
+python-memcached
+http-parser
