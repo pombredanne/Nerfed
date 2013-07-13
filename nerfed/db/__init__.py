@@ -1,2 +1,2 @@
 from sqlachemydb import SQLAlchemyDB
-from  import MongoDB
+from mongodb import MongoDB
