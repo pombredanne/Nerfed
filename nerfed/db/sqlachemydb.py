@@ -5,8 +5,8 @@ from sqlalchemy import Table
 from sqlalchemy import Integer as SQLAInteger
 from sqlalchemy import Text as SQLAText
 
-from properties import String as NerfedString
-from properties import Integer as NerfedInteger
+from ..properties import String as NerfedString
+from ..properties import Integer as NerfedInteger
 
 
 class SQLAlchemyDB(object):
