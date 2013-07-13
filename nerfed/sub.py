@@ -39,7 +39,7 @@ class Sub(object):
             return self.app.forbidden()
         if hasattr(self, method.lower()):
             return self.get(request)
-        return self.app.forbidden()
+        return self.app.forbidden(request)
 
     def reverse(self, **kwargs):
         return self.format % kwargs

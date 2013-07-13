@@ -17,4 +17,4 @@ class ErrorResponses(object):
 
 
 def random_string(N):
-    return ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(N))
+    return ''.join(random.choice(string.ascii_letters + string.digits) for x in range(N))
