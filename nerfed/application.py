@@ -80,7 +80,7 @@ class Application(ErrorResponses):
     def render(self, request, path, **context):
         response = Response(status=200)
         template = self.loader.load(Environment(), path)
-        kwargs['settings'] = self.settings
-        kwargs['request'] = request
+        context['settings'] = self.settings
+        context['request'] = request
         response.text = template.render(**context)
         return response
