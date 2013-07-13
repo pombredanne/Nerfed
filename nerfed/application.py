@@ -73,7 +73,6 @@ class Application(ErrorResponses):
                 print_exc()
                 response = self.internal_server_error(request)
                 return response(environ, start_response)
-            return response(environ, start_response)
         response = self.not_found(request)
         return response(environ, start_response)
 
