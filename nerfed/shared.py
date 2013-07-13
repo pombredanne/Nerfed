@@ -1,3 +1,6 @@
+import random
+import string
+
 from webob import Response
 
 
@@ -11,3 +14,7 @@ class ErrorResponses(object):
 
     def forbidden(self, request):
         return Response('<h1>Forbidden</h1>', 403)
+
+
+def random_string(N):
+    return ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(N))

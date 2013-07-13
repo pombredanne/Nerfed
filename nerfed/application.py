@@ -8,12 +8,14 @@ from jinja2 import Environment
 from jinja2 import FileSystemLoader
 
 from shared import ErrorResponses
-
+from middleware.csrf import CSRF
 
 log = getLogger(__file__)
 
 
 class Application(ErrorResponses):
+
+    middlewares = [CSRF]
 
     def __init__(self, settings=None):
         self.settings = settings
@@ -67,13 +69,25 @@ class Application(ErrorResponses):
                 continue
             # found the good sub
             request.path_match = path_match
+            for middlware in self.middlwares:
+                maybe_response = middlware.process_request_before_view(request)
+                if isinstance(maybe_response, HttpResponse):
+                    return maybe_response
             try:
                 response = sub(request)
             except Exception:  # XXX: improve this
                 print_exc()
                 response = self.internal_server_error(request)
+                for middlware in self.middlwares:
+                    maybe_response = middlware.process_request_before_view(request)
+                    if isinstance(maybe_response, HttpResponse):
+                        return maybe_response
                 return response(environ, start_response)
         response = self.not_found(request)
+        for middlware in self.middlwares:
+            maybe_response = middlware.process_request_before_view(request)
+            if isinstance(maybe_response, HttpResponse):
+                return maybe_response
         return response(environ, start_response)
 
     def render(self, request, path, **context):
