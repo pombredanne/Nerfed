@@ -8,7 +8,7 @@ from jinja2 import Environment
 from jinja2 import FileSystemLoader
 
 from shared import ErrorResponses
-from middleware.csrf import CSRF
+from middlewares.csrf import CSRF
 
 log = getLogger(__file__)
 
@@ -69,24 +69,30 @@ class Application(ErrorResponses):
                 continue
             # found the good sub
             request.path_match = path_match
-            for middlware in self.middlwares:
-                maybe_response = middlware.process_request_before_view(request)
-                if isinstance(maybe_response, HttpResponse):
+            for middleware in self.middlewares:
+                maybe_response = middleware.process_request_before_view(self, request)
+                if isinstance(maybe_response, Response):
                     return maybe_response
             try:
                 response = sub(request)
             except Exception:  # XXX: improve this
                 print_exc()
                 response = self.internal_server_error(request)
-                for middlware in self.middlwares:
-                    maybe_response = middlware.process_request_before_view(request)
-                    if isinstance(maybe_response, HttpResponse):
+                for middleware in self.middlewares:
+                    maybe_response = middleware.process_request_before_view(self, request)
+                    if isinstance(maybe_response, Response):
                         return maybe_response
                 return response(environ, start_response)
+            else:
+                for middleware in self.middlewares:
+                    maybe_response = middleware.process_request_before_view(self, request)
+                    if isinstance(maybe_response, Response):
+                        return maybe_response
+                return response(environ, start_response)                
         response = self.not_found(request)
-        for middlware in self.middlwares:
-            maybe_response = middlware.process_request_before_view(request)
-            if isinstance(maybe_response, HttpResponse):
+        for middleware in self.middlewares:
+            maybe_response = middleware.process_request_before_view(self, request)
+            if isinstance(maybe_response, Response):
                 return maybe_response
         return response(environ, start_response)
 

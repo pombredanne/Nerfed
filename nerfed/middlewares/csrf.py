@@ -10,11 +10,9 @@ class CSRF(object):
             return random_string(512)
 
     def process_request_before_view(self, app, request):
-        request.META['CSRF_COOKIE_USED'] = True        
-
         cookie_csrf_token = self._cookie_csrf_token(request)
 
-        if request.method = 'POST':
+        if request.method == 'POST':
             request_csrf_token = request.POST.get('csrfmiddlewaretoken', None)
 
             if cookie_csrf_token != request.csrf_token:
