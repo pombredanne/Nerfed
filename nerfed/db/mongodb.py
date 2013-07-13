@@ -4,7 +4,9 @@ from pymongo import MongoClient
 class MongoDB(object):
 
     def __init__(self, configuration):
-        self.client = MongoClient(*configuration.MONGODB_SERVER.split(':'))
+        server, port = configuration.MONGODB_SERVER.split(':')
+        port = int(port)
+        self.client = MongoClient(server, port)
 
     def __getattribute__(self, attr):
         try:
