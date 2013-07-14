@@ -177,15 +177,20 @@ class Imperator(object):
     """
 
     __metaclass__ = PropertyBasedClass
+    actions = tuple()
 
-    def __init__(self, data, app=None):
+    def __init__(self, data=None):
         self.data = dict()
+        data = data if data else dict()
         for name, value in data.iteritems():
-            property = self.properties[name]
-            self.data[property] = value
-        self.app = app
+            try:
+                property = self.properties[name]
+            except KeyError:
+                continue
+            else:
+                self.data[property] = value
 
-    def __call__(self):
+    def __call__(self, app):
         """Executes actions on each properties and object wide return False
         if one of the action do so"""
         all_ok = True
@@ -194,9 +199,9 @@ class Imperator(object):
             for action in property.actions:
                 ok = action(self, property, value)
                 all_ok = False if not ok else all_ok
-            for action in getattr(self, 'actions', list()):
-                ok = action(self, all_ok)
-                all_ok = False if not ok else all_ok
+        for action in self.actions:
+            ok = action(app, self, all_ok)
+            all_ok = False if not ok else all_ok
         return all_ok
 
     def log_message(self, property, message):

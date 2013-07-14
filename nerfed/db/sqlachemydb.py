@@ -11,7 +11,7 @@ from ..properties import Integer as NerfedInteger
 
 class SQLAlchemyDB(object):
 
-    NOT_COLUMN_PROPERTY = ['nullable']
+    NOT_COLUMN_PROPERTY = ['nullable', 'null']
 
     def __init__(self, configuration):
         self.engine = engine_from_config(dict(), **configuration)

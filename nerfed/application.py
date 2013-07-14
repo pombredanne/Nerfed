@@ -31,14 +31,14 @@ class Application(ErrorResponses):
         return sub
 
     def full_path(self, current):
-        return '/'
+        return ''
 
     def _match_path(self, match, path, subs):
-        match = None
+        match = dict()
         for sub in subs:
             submatch = sub.path.match(path)
             if submatch:
-                # it is the good path
+                # it is a good path
                 matched = submatch.groupdict()
                 if matched:
                     matched.update(match)
@@ -47,14 +47,14 @@ class Application(ErrorResponses):
                 subpath = path[submatch.end():]
                 if subpath:
                     # try subs from this sub
-                    o = self._match_path(submatch, subpath, sub.subs)
+                    o = self._match_path(matched, subpath, sub.subs)
                     if o[0]:
                         # a sub of this sub is a match return it
                         return o
                 else:
                     # if it matched but is not a subsub then it's the one
                     # that match (and to repeat it: it's not a sub of sub!)
-                    return submatch, sub
+                    return matched, sub
             # else continue
         # None matched
         return None, None
@@ -65,7 +65,7 @@ class Application(ErrorResponses):
             log.debug('try to match %s' % sub)
             # first match the domain if any try to match the path
             path_match, sub = self._match_path(dict(), request.path, [sub])
-            if not path_match:
+            if not sub:
                 continue
             # found the good sub
             request.path_match = path_match
@@ -101,5 +101,9 @@ class Application(ErrorResponses):
         template = self.loader.load(Environment(), path)
         context['settings'] = self.settings
         context['request'] = request
+        context['app'] = self.app
         response.text = template.render(**context)
         return response
+
+    def redirect(self, url):
+        return Response(status=302, location=url)
