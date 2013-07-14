@@ -24,6 +24,4 @@ class CSRF(object):
     def process_response_before_answer(self, app, request, response):
         # XXX: 36000 is suspicious I can't find the right value
         # maybe use expires ?
-        response.set_cookie(CSRF.COOKIE_NAME, self._cookie_csrf_token(request), max_age=36000, domain=app.settings.COOKIE_DOMAIN)
-        print response
-        
+        response.set_cookie(CSRF.COOKIE_NAME, self._cookie_csrf_token(request), max_age=36000, domain=app.settings.COOKIE_DOMAIN)        
