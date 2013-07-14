@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <title>hyper.ly</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='http://fonts.googleapis.com/css?family=Alef' rel='stylesheet' type='text/css'>
+    <link href="{{ settings.STATIC_URL }}/css/foundation.min.css" rel="stylesheet">
+    <link href="{{ settings.STATIC_URL }}/css/app.css" rel="stylesheet">
+  </head>
+  <body>
+      <form method="POST">
+	<div class="row collapse">
+	  <h1>hyper.ly</h1>
+	  <input type="hidden" name="csrf_token" value="{{ request.cookies.csrf_token }}"/>
+	  <div class="columns large-10">
+	    <input type="text" name="url"/>
+	  </div>
+	  <div class="columns large-2">
+	    <input class="prefix button" type="submit" value="shorten"/>
+	  </div>
+	  {% if form.messages and form.messages.url %}
+	      <small class="error">{% for message in form.messages.url %}{{ message }} {% endfor %}</small>
+          {% endif %}
+	</div>
+      </form>
+  </body>
+</html>

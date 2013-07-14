@@ -1,0 +1,6 @@
+gunicorn
+watchdog
+tproxy
+webob
+jinja2
+pymongo

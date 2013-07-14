@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <title>hyper.ly</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='http://fonts.googleapis.com/css?family=Alef' rel='stylesheet' type='text/css'>
+    <link href="{{ settings.STATIC_URL }}/css/foundation.min.css" rel="stylesheet">
+    <link href="{{ settings.STATIC_URL }}/css/app.css" rel="stylesheet">
+  </head>
+  <body>
+      <form method="POST">
+	<div class="row collapse">
+	  <h1>hyper.ly/{{url.short_url}}</h1>
+	  <h2><a href="{{ app.url_redirect.reverse(short_url=url.short_url) }}">{{ url.url }}</h2>
+	</div>
+      </form>
+  </body>
+</html>
